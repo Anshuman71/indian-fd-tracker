@@ -2,10 +2,20 @@ import { BANKS, REDIS_KEYS } from "@/utils/constants";
 import { formatInterest } from "@/utils/fns";
 import { redis, setInterestRates } from "@/utils/upstash";
 import * as cheerio from "cheerio";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const secret = request.headers.get("Secret");
+
+  if (secret !== process.env.CRON_SECRET) {
+    console.log("=====Invalid secret=====");
+    return new Response("Invalid secret", {
+      status: 200,
+    });
+  }
+
   await redis.set(REDIS_KEYS.lastCrawled, new Date().toISOString());
+
   const crawledList = BANKS.map(async (bank) => {
     const data = await fetch(bank.url);
     const html = await data.text();
@@ -27,7 +37,6 @@ export async function GET() {
   results.map((result) => {
     if (result.status === "fulfilled") {
       success++;
-
       return result.value;
     }
     if (result.status === "rejected") {
