@@ -5,9 +5,10 @@ import * as cheerio from "cheerio";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const secret = request.headers.get("Secret");
+  const secret = request.headers.get("secret");
 
-  console.log({ headers: request.headers.has("Secret") });
+  console.log({ Secret: request.headers.has("Secret") });
+  console.log({ secret: request.headers.has("secret") });
 
   if (secret !== process.env.CRON_SECRET) {
     console.log("=====Invalid secret=====");
