@@ -5,7 +5,7 @@ import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
 
 export async function formatDays(days: string) {
-  const { text, usage } = await generateText({
+  const { text } = await generateText({
     model: openai("gpt-4o-mini-2024-07-18"),
     prompt: `Convert the following input text to number of days based on the higher value in the range. Only return the number of days as the final output without any other text around it.
 
@@ -27,12 +27,11 @@ export async function formatDays(days: string) {
 
     Input: ${days}`,
   });
-  console.log({ usage });
   return text;
 }
 
 export function sanitizeText(text: string) {
-  return text.trim().replace(/\s+/g, " ");
+  return text.trim().replace(/\s+/g, " ").replace(/%/g, "");
 }
 
 export async function formatInterest(interest: Interest) {

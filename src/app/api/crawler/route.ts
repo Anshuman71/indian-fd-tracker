@@ -1,15 +1,23 @@
-import { BANKS } from "@/utils/constants";
+import { BANKS, REDIS_KEYS } from "@/utils/constants";
 import { formatInterest } from "@/utils/fns";
+import { redis, setInterestRates } from "@/utils/upstash";
 import * as cheerio from "cheerio";
 import { NextResponse } from "next/server";
 
 export async function GET() {
+  await redis.set(REDIS_KEYS.lastCrawled, new Date().toISOString());
   const crawledList = BANKS.map(async (bank) => {
     const data = await fetch(bank.url);
     const html = await data.text();
+
     const $ = cheerio.load(html);
     const interests = bank.fn($);
+
     const formattedInterest = await formatInterest(interests);
+
+    const key = REDIS_KEYS.interest + bank.key;
+    await setInterestRates(key, formattedInterest);
+
     return { bank, interests: formattedInterest };
   });
 
@@ -19,8 +27,7 @@ export async function GET() {
   results.map((result) => {
     if (result.status === "fulfilled") {
       success++;
-      // write to database
-      console.log(result.value);
+
       return result.value;
     }
     if (result.status === "rejected") {

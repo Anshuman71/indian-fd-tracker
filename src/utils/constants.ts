@@ -1,5 +1,11 @@
 import { canaraBank, hdfcBank } from "./fns";
 
+export const REDIS_KEYS = {
+  interest: `interest-`,
+  lastModified: `last-modified-at`,
+  lastCrawled: `last-crawled-at`,
+};
+
 export const BANKS = [
   {
     key: "canara",
