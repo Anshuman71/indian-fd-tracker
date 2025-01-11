@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(request: NextRequest) {
   const secret = request.headers.get("Secret");
 
+  console.log({ headers: request.headers.has("Secret") });
+
   if (secret !== process.env.CRON_SECRET) {
     console.log("=====Invalid secret=====");
     return new Response("Invalid secret", {
