@@ -9,13 +9,13 @@ export const REDIS_KEYS = {
 export const BANKS = [
   {
     key: "canara",
-    value: "Canara Bank",
+    name: "Canara Bank",
     url: "https://canarabank.com/pages/deposit-interest-rates",
     fn: canaraBank,
   },
   {
     key: "hdfc",
-    value: "HDFC Bank",
+    name: "HDFC Bank",
     url: "https://www.hdfcbank.com/personal/resources/rates",
     fn: hdfcBank,
   },
