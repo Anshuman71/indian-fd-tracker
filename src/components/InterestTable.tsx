@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/table";
 import { Interest } from "@/utils/types";
 import clsx from "clsx";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, redirect } from "next/navigation";
 
 export default function BankInterestRates({
   bankData,
@@ -26,13 +26,17 @@ export default function BankInterestRates({
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const selectedBank = searchParams.get("bank") || bankData[0].key;
+  const selectedBank = searchParams.get("bank");
   const handleBankChange = (value: string) => {
     const selected = bankData.find((bank) => bank.key === value)?.key;
     if (selected) {
       router.push(`?bank=${value}`, { scroll: false });
     }
   };
+
+  if (!selectedBank) {
+    return redirect(`/?bank=${bankData[0].key}`);
+  }
 
   const interestObject = bankData.find(
     (bank) => bank.key === selectedBank
